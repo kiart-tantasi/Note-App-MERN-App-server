@@ -84,7 +84,23 @@ app.route("/items/:itemName")
             if (err) {
                 console.log(err)
             } else {
-                console.log("Description is Successfully Patched.")
+                console.log("Successfully Patched.")
+            }
+        }
+    )
+})
+
+.put((req,res) => {
+    Item.findOneAndUpdate(
+        {item: req.params.itemName},
+        {item: req.body.item,
+        des: req.body.des},
+        {overwrite: true},
+        err => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log("Successfully Put.")
             }
         }
     )
