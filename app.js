@@ -6,6 +6,8 @@ const { urlencoded } = require("body-parser");
 
 app.use(bodyParser.urlencoded({extended:false}));
 
+app.use(express.json());
+
 mongoose.connect("mongodb://localhost:27017/reactDB");
 
 const itemSchema = {
@@ -59,6 +61,33 @@ app.route("/items")
 
 .delete((req,res) => {
     console.log("Delete Method Activated!")
+})
+
+app.route("/items/:itemName")
+
+.delete((req,res) => {
+    const itemId = req.body._id;
+    Item.findByIdAndRemove(itemId,err=>{
+        if(err) {
+            console.log(err)
+        } else {
+            console.log("Item ID: " + itemId +" was Deleted.")
+        }
+    })
+})
+
+.patch((req,res) => {
+    Item.findOneAndUpdate(
+        {item: req.params.itemName},
+        {des: req.body.des},
+        err => {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log("Description is Successfully Patched.")
+            }
+        }
+    )
 })
 
 const port = process.env.PORT || 5000;
