@@ -19,21 +19,40 @@ const Item = mongoose.model("Item",itemSchema);
 
 /* --- Adding Default Items --- */
 
-// const item1 = {
-//     item: "item1",
-//     des: "des of item1"
-// }
-// const item2 = {
-//     item:"item2",
-//     des:"des of item2"
-// }
-// const defaultItems = [item1,item2];
-// Item.insertMany(defaultItems, err => {
-//     console.log("Default Items Added")
-//     if (err) {
-//         console.log(err);
-//     }
-// })
+const item1 = {
+    item: "Table",
+    des: "a piece of furniture with a flat top and one or more legs, providing a level surface on which objects may be placed, and that can be used for such purposes as eating, writing, working, or playing games."
+}
+const item2 = {
+    item:"Book",
+    des:"a written or printed work consisting of pages glued or sewn together along one side and bound in covers."
+}
+
+const item3 = {
+    item:"Pen",
+    des:"an instrument for writing or drawing with ink, typically consisting of a metal nib or ball, or a nylon tip, fitted into a metal or plastic holder."
+}
+
+const defaultItems = [item1,item2,item3];
+
+Item.find({},
+    (err,foundItems) => {
+        if (err) {
+            console.log(err);
+        } else {
+            if (foundItems.length === 0) {
+                Item.insertMany(defaultItems, err => {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("Since no items were found in database, default items were added accordingly.")
+                    }
+                })
+
+            }
+        }
+    })
+
 
 /* ---------------------------- */
 
