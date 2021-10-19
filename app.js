@@ -17,23 +17,25 @@ const itemSchema = {
 
 const Item = mongoose.model("Item",itemSchema);
 
-/* --- Adding Default Items --- 
-const item1 = {
-    item: "item1",
-    des: "des of item1"
-}
-const item2 = {
-    item:"item2",
-    des:"des of item2"
-}
-const defaultItems = [item1,item2];
-Item.insertMany(defaultItems, err => {
-    console.log("Default Items Added")
-    if (err) {
-        console.log(err);
-    }
-})
- ---------------- */
+/* --- Adding Default Items --- */
+
+// const item1 = {
+//     item: "item1",
+//     des: "des of item1"
+// }
+// const item2 = {
+//     item:"item2",
+//     des:"des of item2"
+// }
+// const defaultItems = [item1,item2];
+// Item.insertMany(defaultItems, err => {
+//     console.log("Default Items Added")
+//     if (err) {
+//         console.log(err);
+//     }
+// })
+
+/* ---------------------------- */
 
 app.route("/items")
 
@@ -77,7 +79,7 @@ app.route("/items/:itemName")
 })
 
 .patch((req,res) => {
-    Item.findOneAndUpdate(
+    Item.updateOne(
         {item: req.params.itemName},
         {des: req.body.des},
         err => {
@@ -90,21 +92,21 @@ app.route("/items/:itemName")
     )
 })
 
-.put((req,res) => {
-    Item.findOneAndUpdate(
-        {item: req.params.itemName},
-        {item: req.body.item,
-        des: req.body.des},
-        {overwrite: true},
-        err => {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log("Successfully Put.")
-            }
-        }
-    )
-})
+// .put((req,res) => {
+//     Item.findOneAndUpdate(
+//         {item: req.params.itemName},
+//         {item: req.body.item,
+//         des: req.body.des},
+//         {overwrite: true},
+//         err => {
+//             if (err) {
+//                 console.log(err);
+//             } else {
+//                 console.log("Successfully Put.")
+//             }
+//         }
+//     )
+// })
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
