@@ -1,5 +1,5 @@
 # MERN-Stack-WebApp-Adding-Deleting-Updating-Items
-Web App for Adding/Deleting/Updating items using MERN Stack: MongoDB (Mongoose) + Express + React + NodeJS. Note: You can find and download 'client' folder in 'https://github.com/pedsped/client-react-nodejs-kt'.
+Web App for Adding/Deleting/Updating items using MERN Stack: MongoDB (Mongoose) + Express + React + NodeJS. Note: You can find and download 'client' folder in 'https://github.com/kiart-tantasi/client'.
 
 
 
@@ -13,4 +13,5 @@ To run React (Frontend)
 go to directory cd Desktop\MERN-Stack-WebApp-Adding-Deleting-Updating-Items/client-react-nodejs-kt (by typing "cd Desktop\MERN-Stack-WebApp-Adding-Deleting-Updating-Items" in command line and enter)
 and then type
 "npm install "(just for the first time)
+and type 
 "npm start" to start react
