@@ -1,12 +1,13 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const bodyParser = require("body-parser");
-const { urlencoded } = require("body-parser");
-
-app.use(bodyParser.urlencoded({extended:false}));
+const cors = require('cors');
+// const bodyParser = require("body-parser");
+// const { urlencoded } = require("body-parser");
+// app.use(bodyParser.urlencoded({extended:false}));
 
 app.use(express.json());
+app.use(cors());
 
 mongoose.connect("mongodb://localhost:27017/reactDB");
 
