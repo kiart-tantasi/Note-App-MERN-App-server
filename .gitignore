@@ -1,3 +1,5 @@
-node_modules
+/node_modules
+/client
+/react-nodejs-Note-App-MERN-STACK-client
 
 .env
