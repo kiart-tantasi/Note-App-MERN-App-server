@@ -57,6 +57,8 @@ Item.find({},
 
 /* ---------------------------- */
 
+app.get("/",(req,res) => res.redirect("/items"));
+
 app.route("/items")
 
 .get((req,res) => {
