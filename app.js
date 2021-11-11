@@ -9,7 +9,7 @@ const cors = require('cors');
 app.use(express.json());
 app.use(cors());
 
-mongoose.connect("mongodb://localhost:27017/reactDB");
+mongoose.connect("mongodb://localhost:27017/noteDB");
 
 const itemSchema = {
     item: String,
