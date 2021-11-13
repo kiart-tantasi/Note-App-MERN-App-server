@@ -21,38 +21,40 @@ const Item = mongoose.model("Item",itemSchema);
 /* --- Adding Default Items --- */
 
 const item1 = {
-    item: "Table",
-    des: "a piece of furniture with a flat top and one or more legs, providing a level surface on which objects may be placed, and that can be used for such purposes as eating, writing, working, or playing games."
+    item: "Morining",
+    des: "I have to cleaning my room."
 }
 const item2 = {
-    item:"Book",
-    des:"a written or printed work consisting of pages glued or sewn together along one side and bound in covers."
+    item:"Tomorrow",
+    des:"a little more of housework"
 }
 
 const item3 = {
-    item:"Pen",
-    des:"an instrument for writing or drawing with ink, typically consisting of a metal nib or ball, or a nylon tip, fitted into a metal or plastic holder."
+    item:"This Weekend",
+    des:"Going to Have some Beer!"
 }
 
 const defaultItems = [item1,item2,item3];
 
-Item.find({},
-    (err,foundItems) => {
-        if (err) {
-            console.log(err);
-        } else {
-            if (foundItems.length === 0) {
-                Item.insertMany(defaultItems, err => {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("Since no items were found in database, default items were added accordingly.")
-                    }
-                })
+function addDefaultItems() {
+    Item.find({},
+        (err,foundItems) => {
+            if (err) {
+                console.log(err);
+            } else {
+                if (foundItems.length === 0) {
+                    Item.insertMany(defaultItems, err => {
+                        if (err) {
+                            console.log(err);
+                        }
+                    })
 
+                }
             }
         }
-    })
+    )
+}
+
 
 
 /* ---------------------------- */
@@ -64,8 +66,8 @@ app.route("/items")
 .get((req,res) => {
     Item.find({}, (err,foundItems) => {
         if (foundItems.length === 0) {
-            res.send("No Items.");
-            console.log("No Items.")
+            addDefaultItems();
+            res.redirect("/items")
         } else {
             res.send(foundItems);
         }
@@ -83,10 +85,6 @@ app.route("/items")
     res.redirect("/items")
 })
 
-.delete((req,res) => {
-    console.log("Delete Method Activated!")
-})
-
 app.route("/items/:itemName")
 
 .delete((req,res) => {
@@ -94,8 +92,6 @@ app.route("/items/:itemName")
     Item.findByIdAndRemove(itemId,err=>{
         if(err) {
             console.log(err)
-        } else {
-            console.log("Item ID: " + itemId +" was Deleted.")
         }
     })
 })
@@ -107,28 +103,10 @@ app.route("/items/:itemName")
         err => {
             if (err) {
                 console.log(err)
-            } else {
-                console.log("Successfully Patched.")
             }
         }
     )
 })
-
-// .put((req,res) => {
-//     Item.findOneAndUpdate(
-//         {item: req.params.itemName},
-//         {item: req.body.item,
-//         des: req.body.des},
-//         {overwrite: true},
-//         err => {
-//             if (err) {
-//                 console.log(err);
-//             } else {
-//                 console.log("Successfully Put.")
-//             }
-//         }
-//     )
-// })
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
