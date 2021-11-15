@@ -46,7 +46,6 @@ app.route("/items")
         }
     })
 })
-
 .post((req,res) => {
     const itemName = req.body.item;
     const itemDes = req.body.des;
@@ -57,6 +56,7 @@ app.route("/items")
     addItem.save();
     res.redirect("/items");
 })
+
 //route specific items
 app.route("/items/:itemName")
 .delete((req,res) => {
@@ -67,7 +67,6 @@ app.route("/items/:itemName")
         }
     })
 })
-
 .patch((req,res) => {
     Item.updateOne(
         {item: req.params.itemName},
