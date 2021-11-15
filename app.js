@@ -14,7 +14,7 @@ const Item = mongoose.model("Item",itemSchema);
 //Adding Default Items
 function addDefaultItems() {
     const item1 = {
-        item: "Morining",
+        item: "Morning",
         des: "I have to cleaning my room."
     }
     const item2 = {
