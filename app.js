@@ -19,27 +19,20 @@ const itemSchema = mongoose.Schema({
 });
 const Item = mongoose.model("Item", itemSchema);
 
-//Adding Default Items
-function addDefaultItems() {
-  const item1 = {
-    item: "Morning",
-    des: "I have to cleaning my room.",
-  };
-  const item2 = {
-    item: "Tomorrow",
-    des: "a little more of housework",
-  };
-  const item3 = {
-    item: "This Weekend",
-    des: "Going to Have some Beer!",
-  };
-  const defaultItems = [item1, item2, item3];
-  Item.insertMany(defaultItems, (err) => {
-    if (err) {
-      console.log(err);
-    }
-  });
-}
+//Default Items
+const item1 = {
+  item: "Morning",
+  des: "I have to cleaning my room.",
+};
+const item2 = {
+  item: "Tomorrow",
+  des: "a little more of housework",
+};
+const item3 = {
+  item: "This Weekend",
+  des: "Going to Have some Beer!",
+};
+const defaultItems = [item1, item2, item3];
 
 //route items
 app.get("/", (req, res) => res.redirect("/items"));
@@ -47,9 +40,19 @@ app
   .route("/items")
   .get((req, res) => {
     Item.find({}, (err, foundItems) => {
+      if (err) {
+        console.log(err);
+        return;
+      } 
       if (foundItems.length === 0) {
-        addDefaultItems();
-        res.redirect("/items");
+        //Adding Default Items
+        Item.insertMany(defaultItems, (err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            res.redirect("/items");
+          }
+        });
       } else {
         res.send(foundItems);
       }
@@ -74,6 +77,8 @@ app
     Item.findByIdAndRemove(itemId, (err) => {
       if (err) {
         console.log(err);
+      } else {
+        res.sendStatus(200);
       }
     });
   })
@@ -84,6 +89,8 @@ app
       (err) => {
         if (err) {
           console.log(err);
+        } else {
+          res.sendStatus(200);
         }
       }
     );
