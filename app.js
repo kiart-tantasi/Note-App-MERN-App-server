@@ -22,7 +22,7 @@ const Item = mongoose.model("Item", itemSchema);
 //Default Items
 const item1 = {
   item: "Morning",
-  des: "I have to cleaning my room.",
+  des: "I have to clean my room.",
 };
 const item2 = {
   item: "Tomorrow",
