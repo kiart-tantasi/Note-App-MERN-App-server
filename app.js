@@ -34,18 +34,22 @@ const item3 = {
 };
 const defaultItems = [item1, item2, item3];
 
-//route items
+//redirect from route "/"
 app.get("/", (req, res) => res.redirect("/items"));
+
+//route "/items"
 app
   .route("/items")
+
+  // GET ALL NOTES
   .get((req, res) => {
     Item.find({}, (err, foundItems) => {
       if (err) {
         console.log(err);
         return;
-      } 
+      }
       if (foundItems.length === 0) {
-        //Adding Default Items
+        // insert default items if nothing is found
         Item.insertMany(defaultItems, (err) => {
           if (err) {
             console.log(err);
@@ -58,6 +62,8 @@ app
       }
     });
   })
+
+  // POST A NEW NOTE
   .post((req, res) => {
     const itemName = req.body.item;
     const itemDes = req.body.des;
@@ -69,19 +75,32 @@ app
     res.redirect("/items");
   });
 
-//route specific items
+//route specific items "items/:itemName"
 app
   .route("/items/:itemName")
+
+  // DELETE
   .delete((req, res) => {
-    const itemId = req.body._id;
-    Item.findByIdAndRemove(itemId, (err) => {
+    Item.deleteOne({ item: req.params.itemName }, (err) => {
       if (err) {
         console.log(err);
       } else {
-        res.sendStatus(200);
+        Item.find({}, (err, foundItems) => {
+          if (err) {
+            console.log(err);
+          } else {
+            if (foundItems.length === 0) {
+              res.sendStatus(404);
+            } else if (foundItems.length > 0) {
+              res.send(foundItems);
+            }
+          }
+        });
       }
     });
   })
+
+  // UPDATE
   .patch((req, res) => {
     Item.updateOne(
       { item: req.params.itemName },
@@ -90,7 +109,17 @@ app
         if (err) {
           console.log(err);
         } else {
-          res.sendStatus(200);
+          Item.find({}, (err, foundItems) => {
+            if (err) {
+              console.log(err);
+            } else {
+              if (foundItems.length === 0) {
+                res.sendStatus(404);// This is not suppused to run since this is updating, not deleting.
+              } else if (foundItems.length > 0) {
+                res.send(foundItems);
+              }
+            }
+          });
         }
       }
     );
