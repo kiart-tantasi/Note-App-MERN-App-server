@@ -4,18 +4,19 @@ const app = express();
 const mongoose = require("mongoose");
 app.use(express.json());
 
-// mongoose.connect("mongodb://localhost:27017/noteDB"); <<<< -- use this local mongodb if you don't have any clusters on MongoDB
-const atlasurl =
-  "mongodb+srv://" +
-  process.env.DB_ID +
-  ":" +
-  process.env.DB_PASS +
-  "@free-cluster.yo247.mongodb.net/noteDB";
+mongoose.connect("mongodb://localhost:27017/noteDB"); //  <<<< -- use this local mongodb if you don't have any clusters on MongoDB
 
-mongoose.connect(atlasurl);
+// const atlasurl =
+//   "mongodb+srv://" +
+//   process.env.DB_ID +
+//   ":" +
+//   process.env.DB_PASS +
+//   "@free-cluster.yo247.mongodb.net/noteDB";
+// mongoose.connect(atlasurl);
 const itemSchema = mongoose.Schema({
   item: String,
   des: String,
+  date: Number
 });
 const Item = mongoose.model("Item", itemSchema);
 
@@ -23,16 +24,24 @@ const Item = mongoose.model("Item", itemSchema);
 const item1 = {
   item: "Morning",
   des: "I have to clean my room.",
+  date: new Date().getTime()
 };
 const item2 = {
   item: "Tomorrow",
   des: "a little more of housework",
+  date: new Date().getTime()
 };
 const item3 = {
   item: "This Weekend",
   des: "Going to Have some Beer!",
+  date: new Date().getTime()
 };
-const defaultItems = [item1, item2, item3];
+const item4 = {
+  item: "Party",
+  des: "Next Friday, I have PARTY!",
+  date: new Date().getTime()
+};
+const defaultItems = [item1, item2, item3, item4];
 
 //redirect from route "/"
 app.get("/", (req, res) => res.redirect("/items"));
@@ -67,9 +76,11 @@ app
   .post((req, res) => {
     const itemName = req.body.item;
     const itemDes = req.body.des;
+    const itemDate = req.body.date;
     const addItem = new Item({
       item: itemName,
       des: itemDes,
+      date: itemDate
     });
     addItem.save();
     res.redirect("/items");
