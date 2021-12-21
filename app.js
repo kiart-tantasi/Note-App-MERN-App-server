@@ -2,7 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const cors = require("cors");
+
+// EXPRESS AND CORS SETUP
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(cors());
+
 
 mongoose.connect("mongodb://localhost:27017/noteDB"); //  <<<< -- use this local mongodb if you don't have any clusters on MongoDB
 
@@ -20,29 +26,6 @@ const itemSchema = mongoose.Schema({
 });
 const Item = mongoose.model("Item", itemSchema);
 
-//Default Items
-const item1 = {
-  item: "Morning",
-  des: "I have to clean my room.",
-  date: new Date().getTime()
-};
-const item2 = {
-  item: "Tomorrow",
-  des: "a little more of housework",
-  date: new Date().getTime()
-};
-const item3 = {
-  item: "This Weekend",
-  des: "Going to Have some Beer!",
-  date: new Date().getTime()
-};
-const item4 = {
-  item: "Party",
-  des: "Next Friday, I have PARTY!",
-  date: new Date().getTime()
-};
-const defaultItems = [item1, item2, item3, item4];
-
 //redirect from route "/"
 app.get("/", (req, res) => res.redirect("/items"));
 
@@ -59,6 +42,28 @@ app
       }
       if (foundItems.length === 0) {
         // insert default items if nothing is found
+        //Default Items
+        const item1 = {
+          item: "Morning",
+          des: "I have to clean my room.",
+          date: new Date().getTime()
+        };
+        const item2 = {
+          item: "Tomorrow",
+          des: "a little more of housework",
+          date: new Date().getTime()
+        };
+        const item3 = {
+          item: "This Weekend",
+          des: "Going to Have some Beer!",
+          date: new Date().getTime()
+        };
+        const item4 = {
+          item: "Party",
+          des: "Next Friday, I have PARTY!",
+          date: new Date().getTime()
+        };
+        const defaultItems = [item1, item2, item3, item4];
         Item.insertMany(defaultItems, (err) => {
           if (err) {
             console.log(err);
@@ -86,51 +91,34 @@ app
     res.redirect("/items");
   });
 
-//route specific items "items/:itemName"
+//route specific items "items/:itemId"
 app
-  .route("/items/:itemName")
+  .route("/items/:itemId")
 
   // DELETE
   .delete((req, res) => {
-    Item.deleteOne({ item: req.params.itemName }, (err) => {
+    const itemId = req.params.itemId;
+    Item.deleteOne({ _id: itemId }, (err) => {
       if (err) {
         console.log(err);
       } else {
-        Item.find({}, (err, foundItems) => {
-          if (err) {
-            console.log(err);
-          } else {
-            if (foundItems.length === 0) {
-              res.sendStatus(404);
-            } else if (foundItems.length > 0) {
-              res.send(foundItems);
-            }
-          }
-        });
+        res.sendStatus(200);
       }
     });
   })
 
   // UPDATE
   .patch((req, res) => {
+    const itemId = req.params.itemId;
+    const newDescription = req.body.des;
     Item.updateOne(
-      { item: req.params.itemName },
-      { des: req.body.des },
+      { _id: itemId },
+      { des: newDescription },
       (err) => {
         if (err) {
           console.log(err);
         } else {
-          Item.find({}, (err, foundItems) => {
-            if (err) {
-              console.log(err);
-            } else {
-              if (foundItems.length === 0) {
-                res.sendStatus(404);// This is not suppused to run since this is updating, not deleting.
-              } else if (foundItems.length > 0) {
-                res.send(foundItems);
-              }
-            }
-          });
+          res.sendStatus(200);
         }
       }
     );
