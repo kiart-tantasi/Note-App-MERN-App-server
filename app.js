@@ -90,7 +90,12 @@ app
     addItem.save(err => {
       if (err) {console.log(err)}
       else {
-        res.sendStatus(200);
+        Item.find({}, (err,results) => {
+          if (err) {console.log(err)}
+          else {
+            res.send(results);
+          }
+        })
       }
     });
   });
