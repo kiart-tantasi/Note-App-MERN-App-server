@@ -2,50 +2,68 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
+const cors = require("cors");
+
+// EXPRESS AND CORS SETUP
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
+app.use(cors());
 
-// mongoose.connect("mongodb://localhost:27017/noteDB"); <<<< -- use this local mongodb if you don't have any clusters on MongoDB
-const atlasurl =
-  "mongodb+srv://" +
-  process.env.DB_ID +
-  ":" +
-  process.env.DB_PASS +
-  "@free-cluster.yo247.mongodb.net/noteDB";
 
-mongoose.connect(atlasurl);
+mongoose.connect("mongodb://localhost:27017/noteDB"); //  <<<< -- use this local mongodb if you don't have any clusters on MongoDB
+
+// const atlasurl =
+//   "mongodb+srv://" +
+//   process.env.DB_ID +
+//   ":" +
+//   process.env.DB_PASS +
+//   "@free-cluster.yo247.mongodb.net/noteDB";
+// mongoose.connect(atlasurl);
 const itemSchema = mongoose.Schema({
   item: String,
   des: String,
+  date: Number
 });
 const Item = mongoose.model("Item", itemSchema);
 
-//Default Items
-const item1 = {
-  item: "Morning",
-  des: "I have to clean my room.",
-};
-const item2 = {
-  item: "Tomorrow",
-  des: "a little more of housework",
-};
-const item3 = {
-  item: "This Weekend",
-  des: "Going to Have some Beer!",
-};
-const defaultItems = [item1, item2, item3];
-
-//route items
+//redirect from route "/"
 app.get("/", (req, res) => res.redirect("/items"));
+
+//route "/items"
 app
   .route("/items")
+
+  // GET ALL NOTES
   .get((req, res) => {
     Item.find({}, (err, foundItems) => {
       if (err) {
         console.log(err);
         return;
-      } 
+      }
       if (foundItems.length === 0) {
-        //Adding Default Items
+        // insert default items if nothing is found
+        //Default Items
+        const item1 = {
+          item: "Morning",
+          des: "I have to clean my room.",
+          date: new Date().getTime()
+        };
+        const item2 = {
+          item: "Tomorrow",
+          des: "a little more of housework",
+          date: new Date().getTime()
+        };
+        const item3 = {
+          item: "This Weekend",
+          des: "Going to Have some Beer!",
+          date: new Date().getTime()
+        };
+        const item4 = {
+          item: "Party",
+          des: "Next Friday, I have PARTY!",
+          date: new Date().getTime()
+        };
+        const defaultItems = [item1, item2, item3, item4];
         Item.insertMany(defaultItems, (err) => {
           if (err) {
             console.log(err);
@@ -58,23 +76,38 @@ app
       }
     });
   })
+
+  // POST A NEW NOTE
   .post((req, res) => {
     const itemName = req.body.item;
     const itemDes = req.body.des;
+    const itemDate = req.body.date;
     const addItem = new Item({
       item: itemName,
       des: itemDes,
+      date: itemDate
     });
-    addItem.save();
-    res.redirect("/items");
+    addItem.save(err => {
+      if (err) {console.log(err)}
+      else {
+        Item.find({}, (err,results) => {
+          if (err) {console.log(err)}
+          else {
+            res.send(results);
+          }
+        })
+      }
+    });
   });
 
-//route specific items
+//route specific items "items/:itemId"
 app
-  .route("/items/:itemName")
+  .route("/items/:itemId")
+
+  // DELETE
   .delete((req, res) => {
-    const itemId = req.body._id;
-    Item.findByIdAndRemove(itemId, (err) => {
+    const itemId = req.params.itemId;
+    Item.deleteOne({ _id: itemId }, (err) => {
       if (err) {
         console.log(err);
       } else {
@@ -82,10 +115,14 @@ app
       }
     });
   })
+
+  // UPDATE
   .patch((req, res) => {
+    const itemId = req.params.itemId;
+    const newDescription = req.body.des;
     Item.updateOne(
-      { item: req.params.itemName },
-      { des: req.body.des },
+      { _id: itemId },
+      { des: newDescription },
       (err) => {
         if (err) {
           console.log(err);
