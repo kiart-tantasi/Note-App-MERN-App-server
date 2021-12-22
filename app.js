@@ -3,22 +3,19 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const cors = require("cors");
-
 // EXPRESS AND CORS SETUP
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cors());
 
-
-mongoose.connect("mongodb://localhost:27017/noteDB"); //  <<<< -- use this local mongodb if you don't have any clusters on MongoDB
-
-// const atlasurl =
-//   "mongodb+srv://" +
-//   process.env.DB_ID +
-//   ":" +
-//   process.env.DB_PASS +
-//   "@free-cluster.yo247.mongodb.net/noteDB";
-// mongoose.connect(atlasurl);
+// mongoose.connect("mongodb://localhost:27017/noteDB"); //  <<<< -- use this local mongodb if you don't have any clusters on MongoDB
+const atlasurl =
+  "mongodb+srv://" +
+  process.env.DB_ID +
+  ":" +
+  process.env.DB_PASS +
+  "@free-cluster.yo247.mongodb.net/noteDB";
+mongoose.connect(atlasurl);
 const itemSchema = mongoose.Schema({
   item: String,
   des: String,
