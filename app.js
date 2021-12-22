@@ -87,8 +87,12 @@ app
       des: itemDes,
       date: itemDate
     });
-    addItem.save();
-    res.redirect("/items");
+    addItem.save(err => {
+      if (err) {console.log(err)}
+      else {
+        res.sendStatus(200);
+      }
+    });
   });
 
 //route specific items "items/:itemId"
